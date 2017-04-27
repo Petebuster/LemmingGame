@@ -2,4 +2,5 @@ Content\Tile1.xnb
 Content\selector1.xnb
 Content\wormStopper.xnb
 Content\wormWalking.xnb
+Content\wormDying.xnb
 Content\Tile1.png

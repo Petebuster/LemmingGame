@@ -19,3 +19,4 @@ C:\Users\pete\documents\visual studio 2015\Projects\LemmingGame\LemmingGame\Lemm
 C:\Users\pete\documents\visual studio 2015\Projects\LemmingGame\LemmingGame\LemmingGame\bin\x86\Debug\Content\selector1.xnb
 C:\Users\pete\documents\visual studio 2015\Projects\LemmingGame\LemmingGame\LemmingGame\bin\x86\Debug\Content\wormStopper.xnb
 C:\Users\pete\documents\visual studio 2015\Projects\LemmingGame\LemmingGame\LemmingGame\bin\x86\Debug\Content\wormWalking.xnb
+C:\Users\pete\documents\visual studio 2015\Projects\LemmingGame\LemmingGame\LemmingGame\bin\x86\Debug\Content\wormDying.xnb

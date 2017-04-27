@@ -14,12 +14,21 @@ namespace LemmingGame
         private Texture2D image;
         private Rectangle sourceRect;
         private bool active;
-
+        private bool isLoop = true;
+        private bool isDead;
         public bool Active
         {
             set { active = value; }
         }
-
+        public bool IsLoop
+        {
+            set { isLoop = value; }
+        }
+        public bool IsDead
+        {
+            get { return isDead; }
+            set { isDead = value; }
+        }
         public Vector2 CurrentFrame
         {
             get { return currentFrame; }
@@ -54,8 +63,16 @@ namespace LemmingGame
             {
                 frameCounter = 0;
                 currentFrame.X += FrameWidth;
-                if (currentFrame.X >= image.Width)
-                    currentFrame.X = 0;
+                if (currentFrame.X >= image.Width) {
+                    if (isLoop)
+                        currentFrame.X = 0;
+                    else
+                    {
+                        currentFrame.X = image.Width - FrameWidth;
+                        isDead = true;
+                    }
+                        }
+
             }
             sourceRect = new Rectangle((int)currentFrame.X, (int)currentFrame.Y, FrameWidth, FrameHeight);
         }

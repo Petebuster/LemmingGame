@@ -16,6 +16,7 @@ namespace LemmingGame
 
         private Texture2D wormWalking;
         private Texture2D wormStopping;
+        private Texture2D wormDying;
         private Texture2D selectorTexture;
         private Vector2 position = new Vector2();
         private float Velocity = 1;
@@ -36,71 +37,87 @@ namespace LemmingGame
 
         Animation WalkingAnimation = new Animation();
         Animation StopperAnimation = new Animation();
+        Animation DyingAnimation = new Animation();
         Selector Selector = new Selector();
 
 
         //Initialize
 
-        public Worm(Texture2D _wormWalking, Texture2D _wormStopping, Texture2D _selectorTexture)
+        public Worm(Texture2D _wormWalking, Texture2D _wormStopping, Texture2D _wormDying, Texture2D _selectorTexture)
         {
             wormWalking = _wormWalking;
             wormStopping = _wormStopping;
+            wormDying = _wormDying;
             selectorTexture = _selectorTexture;
             WalkingAnimation.Initialize(position, new Vector2(13, 1), 60, wormWalking);
             StopperAnimation.Initialize(position, new Vector2(4, 1), 200, wormStopping);
+            DyingAnimation.Initialize(position, new Vector2(14, 1), 100, wormDying);
         }
 
         public void Update(GameTime gameTime, Vector2 _cameraPos)
         {
-            // Console.WriteLine("cam" + _cameraPos);
-            int camPointerX = mouseState.X + (int)_cameraPos.X;
-            int camPointerY = mouseState.Y + (int)_cameraPos.Y;
-            key = Keyboard.GetState();
-            mouseState = Mouse.GetState();
-           // Console.WriteLine(mouseState);
+            Console.WriteLine(state);
+            if (!DyingAnimation.IsDead)
+            {
+                int camPointerX = mouseState.X + (int)_cameraPos.X;
+                int camPointerY = mouseState.Y + (int)_cameraPos.Y;
+                key = Keyboard.GetState();
+                mouseState = Mouse.GetState();
 
-            position.Y += Velocity;
-            CheckState();
-            CheckDirection();
-            OnGround = false;
-            wormRectangle = new Rectangle((int)position.X, (int)position.Y, WalkingAnimation.FrameWidth, WalkingAnimation.FrameHeight);
-            if (wormRectangle.Contains(camPointerX, camPointerY) && mouseState.LeftButton == ButtonState.Pressed)
-                Selected = true;
+                position.Y += Velocity;
+                CheckState();
+                CheckDirection();
+                OnGround = false;
+                wormRectangle = new Rectangle((int)position.X, (int)position.Y, WalkingAnimation.FrameWidth, WalkingAnimation.FrameHeight);
+                if (wormRectangle.Contains(camPointerX, camPointerY) && mouseState.LeftButton == ButtonState.Pressed)
+                    Selected = true;
 
                 switch (state)
-            {
-               case wormState.Falling:
-                    WalkingAnimation.Active = false;
-                    WalkingAnimation.Update(gameTime);
-                    Velocity = 1; break;
-                case wormState.Walking:
-                    WalkingAnimation.Active = true;
-                    WalkingAnimation.Update(gameTime);
-                    position.X += 1 * speed; break;
-                case wormState.Blocking:
-                    StopperAnimation.Active = true;
-                    StopperAnimation.Update(gameTime);
-                    speed = 0; break;
-                case wormState.Dying: break;
+                {
+                    case wormState.Falling:
+                        WalkingAnimation.Active = false;
+                        WalkingAnimation.Update(gameTime);
+                        Velocity = 1; break;
+                    case wormState.Walking:
+                        WalkingAnimation.Active = true;
+                        WalkingAnimation.Update(gameTime);
+                        position.X += 1 * speed; break;
+                    case wormState.Blocking:
+                        StopperAnimation.Active = true;
+                        StopperAnimation.Update(gameTime);
+                        speed = 0; break;
+                    case wormState.Dying:
+                        DyingAnimation.Active = true;
+                        DyingAnimation.IsLoop = false;
+                        DyingAnimation.Update(gameTime);
+                        if (DyingAnimation.IsDead)
+                            Selected = false;
+                         break;
+                }
             }
-            
         }
 
         private void CheckState()
-        {          
-            if (Selected && key.IsKeyDown(Keys.B))
+        {
+            if (Selected && key.IsKeyDown(Keys.D))
+                state = wormState.Dying;
+            else if(!DyingAnimation.IsDead)
+            {
+                if (Selected && key.IsKeyDown(Keys.B))
                 {
                     state = wormState.Blocking;
                     Working = true;
                     Selected = false;
                 }
 
-            if(!Working)
-            { 
-            if (OnGround)
-                    state = wormState.Walking;
-                else state = wormState.Falling;
-            }    
+                if (!Working)
+                {
+                    if (OnGround)
+                        state = wormState.Walking;
+                    else state = wormState.Falling;
+                }
+
+            }
         }
 
         public void CheckDirection()
@@ -167,14 +184,12 @@ namespace LemmingGame
                         StopperAnimation.Draw(spriteBatch, position - _cameraPos);
                     break;
                 case wormState.Dying:
+                    if (DirectionRight)
+                        DyingAnimation.Draw(spriteBatch, position - _cameraPos);
+                    else
+                        DyingAnimation.Draw(spriteBatch, position - _cameraPos, true);
                     break;
             }
-
-
-            //        if (DirectionRight)
-            //    WalkingAnimation.Draw(spriteBatch, position - _cameraPos);
-            //else
-            //    WalkingAnimation.Draw(spriteBatch, position - _cameraPos, true);
             if (Selected)
                 Selector.Draw(spriteBatch, wormRectangle, selectorTexture, _cameraPos);
         }

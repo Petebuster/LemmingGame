@@ -18,6 +18,7 @@ namespace LemmingGame
         private TimeSpan time;
         private Texture2D walkingTexture;
         private Texture2D stoppingTexture;
+        private Texture2D dyingTexture;
         private Texture2D selectorTexture;
         private int wormCount = 3;
         private int i = 0;
@@ -33,12 +34,12 @@ namespace LemmingGame
         {
             walkingTexture = Content.Load<Texture2D>("wormWalking");
             stoppingTexture = Content.Load<Texture2D>("wormStopper");
+            dyingTexture = Content.Load<Texture2D>("wormDying");
             selectorTexture = Content.Load<Texture2D>("selector1");
             Camera = new Camera();
             Map = new Map(); Map.Initialize();
             time = new TimeSpan();
             Worms = new List<Worm>();
-
         }
 
         public void LoadContent()
@@ -90,7 +91,7 @@ namespace LemmingGame
             if (i < wormCount)
                 if (time.TotalSeconds > 2)
                 {
-                    Worms.Add(new Worm(walkingTexture, stoppingTexture, selectorTexture));
+                    Worms.Add(new Worm(walkingTexture, stoppingTexture, dyingTexture, selectorTexture));
                     time = new TimeSpan();
                     i++;
                 }
