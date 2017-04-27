@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Pipeline="Microsoft.Xna.Framework.Content.Pipeline">
+  <Asset Type="Pipeline:BuildItemCollection">
+    <Item>
+      <Source>Tile1.png</Source>
+      <Name>Tile1</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pete\documents\visual studio 2015\Projects\LemmingGame\LemmingGame\LemmingGame\bin\x86\Debug\Content\Tile1.xnb</Output>
+      <Time>2017-04-24T18:33:31.4541908+02:00</Time>
+    </Item>
+    <Item>
+      <Source>selector1.png</Source>
+      <Name>selector1</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pete\documents\visual studio 2015\Projects\LemmingGame\LemmingGame\LemmingGame\bin\x86\Debug\Content\selector1.xnb</Output>
+      <Time>2017-04-26T14:29:15.4432199+02:00</Time>
+    </Item>
+    <Item>
+      <Source>wormStopper.png</Source>
+      <Name>wormStopper</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pete\documents\visual studio 2015\Projects\LemmingGame\LemmingGame\LemmingGame\bin\x86\Debug\Content\wormStopper.xnb</Output>
+      <Time>2017-04-27T15:35:41.240025+02:00</Time>
+    </Item>
+    <Item>
+      <Source>wormWalking.png</Source>
+      <Name>wormWalking</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pete\documents\visual studio 2015\Projects\LemmingGame\LemmingGame\LemmingGame\bin\x86\Debug\Content\wormWalking.xnb</Output>
+      <Time>2017-04-25T19:24:38.6684562+02:00</Time>
+    </Item>
+    <BuildSuccessful>true</BuildSuccessful>
+    <Settings>
+      <ContentProjectGUID>{1CA429D0-C981-4091-B595-F2C1BABBBD82}</ContentProjectGUID>
+      <TargetPlatform>Windows</TargetPlatform>
+      <TargetProfile>Reach</TargetProfile>
+      <BuildConfiguration>Debug</BuildConfiguration>
+      <CompressContent>false</CompressContent>
+      <RootDirectory>C:\Users\pete\documents\visual studio 2015\Projects\LemmingGame\LemmingGame\LemmingGameContent\</RootDirectory>
+      <LoggerRootDirectory>C:\Users\pete\documents\visual studio 2015\Projects\LemmingGame\LemmingGame\LemmingGame\</LoggerRootDirectory>
+      <IntermediateDirectory>C:\Users\pete\documents\visual studio 2015\Projects\LemmingGame\LemmingGame\LemmingGame\obj\x86\Debug\</IntermediateDirectory>
+      <OutputDirectory>C:\Users\pete\documents\visual studio 2015\Projects\LemmingGame\LemmingGame\LemmingGame\bin\x86\Debug\Content\</OutputDirectory>
+    </Settings>
+    <Assemblies>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.XImporter.dll</Key>
+        <Value>2011-09-01T17:22:30+02:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.VideoImporters.dll</Key>
+        <Value>2011-09-01T17:22:30+02:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.TextureImporter.dll</Key>
+        <Value>2011-09-01T17:22:30+02:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.FBXImporter.dll</Key>
+        <Value>2011-09-01T17:22:30+02:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.EffectImporter.dll</Key>
+        <Value>2011-09-01T17:22:30+02:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.AudioImporters.dll</Key>
+        <Value>2011-09-01T17:22:30+02:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\WINDOWS\Microsoft.Net\assembly\GAC_32\Microsoft.Xna.Framework.Content.Pipeline\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Content.Pipeline.dll</Key>
+        <Value>2016-11-07T11:02:32.502802+01:00</Value>
+      </Assembly>
+    </Assemblies>
+  </Asset>
+</XnaContent>
