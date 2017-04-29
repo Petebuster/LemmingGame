@@ -65,7 +65,10 @@ namespace LemmingGame
                 currentFrame.X += FrameWidth;
                 if (currentFrame.X >= image.Width) {
                     if (isLoop)
+                    {
                         currentFrame.X = 0;
+                        isDead = false;
+                    }
                     else
                     {
                         currentFrame.X = image.Width - FrameWidth;
@@ -86,6 +89,11 @@ namespace LemmingGame
             spriteBatch.Begin();
             spriteBatch.Draw(image, _position, sourceRect, Color.White, 0, Vector2.Zero, 1, appliedEffect, 1);
             spriteBatch.End();
+        }
+        public void Reset()
+        {
+            currentFrame.X = 0;
+            isDead = false;
         }
     }
 }
