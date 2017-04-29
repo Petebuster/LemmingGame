@@ -14,6 +14,7 @@ namespace LemmingGame
         public wormState state = new wormState();
         MouseState mouseState;
 
+        private Texture2D wormFalling;
         private Texture2D wormWalking;
         private Texture2D wormStopping;
         private Texture2D wormDying;
@@ -39,6 +40,7 @@ namespace LemmingGame
 
 
 
+        Animation FallingAnimation = new Animation();
         Animation WalkingAnimation = new Animation();
         Animation StopperAnimation = new Animation();
         Animation DyingAnimation = new Animation();
@@ -50,15 +52,17 @@ namespace LemmingGame
 
         //Initialize
 
-        public Worm(Texture2D _wormWalking, Texture2D _wormStopping, Texture2D _wormDying, Texture2D _tileBreaking, Texture2D _wormDigging, Texture2D _selectorTexture, Gameplay _gameplay)
+        public Worm(Texture2D _wormFalling, Texture2D _wormWalking, Texture2D _wormStopping, Texture2D _wormDying, Texture2D _tileBreaking, Texture2D _wormDigging, Texture2D _selectorTexture, Gameplay _gameplay)
         {
             Gameplay = _gameplay;
+            wormFalling = _wormFalling;
             wormWalking = _wormWalking;
             wormStopping = _wormStopping;
             wormDying = _wormDying;
             wormDigging = _wormDigging;
             breakingTile = _tileBreaking;
             selectorTexture = _selectorTexture;
+            FallingAnimation.Initialize(position, new Vector2(10,1), 100, wormFalling);
             WalkingAnimation.Initialize(position, new Vector2(13, 1), 60, wormWalking);
             StopperAnimation.Initialize(position, new Vector2(4, 1), 200, wormStopping);
             DyingAnimation.Initialize(position, new Vector2(14, 1), 100, wormDying);
@@ -92,8 +96,8 @@ namespace LemmingGame
                 switch (state)
                 {
                     case wormState.Falling:
-                        WalkingAnimation.Active = false;
-                        WalkingAnimation.Update(gameTime);
+                        FallingAnimation.Active = true;
+                        FallingAnimation.Update(gameTime);
                         Velocity = 1; break;
                     case wormState.Walking:
                         WalkingAnimation.Active = true;
@@ -169,23 +173,16 @@ namespace LemmingGame
                 Velocity = 0;
                 OnGround = true;
                 if (state == wormState.Digging)
-                {
-                    
+                {                   
                     BreakingAnimation.Active = true;
                     BreakingAnimation.IsLoop = false;
                     BreakingAnimation.Update(gameTime);
                     breakingRect = /*_collisionRect*/tile.TileRectangle;
                     
-
                     if (BreakingAnimation.IsDead)
                     {
-                        //tileActive = false;
                         Gameplay.BreakTile(tile);
-
                         BreakingAnimation.Reset();
-                        ////BreakingAnimation.IsDead = false;
-
-
                     }
                     breakingActive = tile.tileActive;
                 }
@@ -226,7 +223,7 @@ namespace LemmingGame
             switch (state)
             {
                 case wormState.Falling:
-                    WalkingAnimation.Draw(spriteBatch, position - _cameraPos);
+                    FallingAnimation.Draw(spriteBatch, position - _cameraPos);
                     break;
                 case wormState.Walking:
                     if (DirectionRight)

@@ -73,6 +73,15 @@
       <Output>C:\Users\pete\documents\visual studio 2015\Projects\LemmingGame\LemmingGame\LemmingGame\bin\x86\Debug\Content\wormDigging.xnb</Output>
       <Time>2017-04-28T12:24:22.7892353+02:00</Time>
     </Item>
+    <Item>
+      <Source>wormFalling.png</Source>
+      <Name>wormFalling</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pete\documents\visual studio 2015\Projects\LemmingGame\LemmingGame\LemmingGame\bin\x86\Debug\Content\wormFalling.xnb</Output>
+      <Time>2017-04-29T17:14:48.5834382+02:00</Time>
+    </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
       <ContentProjectGUID>{1CA429D0-C981-4091-B595-F2C1BABBBD82}</ContentProjectGUID>
