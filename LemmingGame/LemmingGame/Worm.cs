@@ -10,15 +10,18 @@ namespace LemmingGame
 {
     class Worm
     {
-        public enum wormState { Falling, Walking, Blocking, Dying}
+        public enum wormState { Falling, Walking, Blocking, Digging, Breaking, Dying}
         public wormState state = new wormState();
         MouseState mouseState;
 
         private Texture2D wormWalking;
         private Texture2D wormStopping;
         private Texture2D wormDying;
+        private Texture2D wormDigging;
+        private Texture2D breakingTile;
         private Texture2D selectorTexture;
         private Vector2 position = new Vector2();
+        private Rectangle breakingRect = new Rectangle();
         private float Velocity = 1;
         private int speed = 1;
         private Rectangle wormRectangle;
@@ -33,25 +36,33 @@ namespace LemmingGame
             get { return wormRectangle; }
         }
 
-        
+        public bool tileActive = true;
 
         Animation WalkingAnimation = new Animation();
         Animation StopperAnimation = new Animation();
         Animation DyingAnimation = new Animation();
+        public Animation BreakingAnimation = new Animation();
+        Animation DiggingAnimation = new Animation();
         Selector Selector = new Selector();
 
+        Gameplay Gameplay;
 
         //Initialize
 
-        public Worm(Texture2D _wormWalking, Texture2D _wormStopping, Texture2D _wormDying, Texture2D _selectorTexture)
+        public Worm(Texture2D _wormWalking, Texture2D _wormStopping, Texture2D _wormDying, Texture2D _tileBreaking, Texture2D _wormDigging, Texture2D _selectorTexture, Gameplay _gameplay)
         {
+            Gameplay = _gameplay;
             wormWalking = _wormWalking;
             wormStopping = _wormStopping;
             wormDying = _wormDying;
+            wormDigging = _wormDigging;
+            breakingTile = _tileBreaking;
             selectorTexture = _selectorTexture;
             WalkingAnimation.Initialize(position, new Vector2(13, 1), 60, wormWalking);
             StopperAnimation.Initialize(position, new Vector2(4, 1), 200, wormStopping);
             DyingAnimation.Initialize(position, new Vector2(14, 1), 100, wormDying);
+            DiggingAnimation.Initialize(position, new Vector2(4, 1), 100, wormDigging);
+            BreakingAnimation.Initialize(position, new Vector2(10, 1), 300, breakingTile);
         }
 
         public void Update(GameTime gameTime, Vector2 _cameraPos)
@@ -70,8 +81,13 @@ namespace LemmingGame
                 OnGround = false;
                 wormRectangle = new Rectangle((int)position.X, (int)position.Y, WalkingAnimation.FrameWidth, WalkingAnimation.FrameHeight);
                 if (wormRectangle.Contains(camPointerX, camPointerY) && mouseState.LeftButton == ButtonState.Pressed)
-                    Selected = true;
+                {
+                   // if (Selected)
+                   //     Selected = false;
+                   /*else*/ Selected = true;
 
+                }
+                
                 switch (state)
                 {
                     case wormState.Falling:
@@ -86,6 +102,12 @@ namespace LemmingGame
                         StopperAnimation.Active = true;
                         StopperAnimation.Update(gameTime);
                         speed = 0; break;
+                    case wormState.Digging:
+                        DiggingAnimation.Active = true;
+                        DiggingAnimation.Update(gameTime);
+                        speed = 0;
+                        Velocity = 1;
+                        break;
                     case wormState.Dying:
                         DyingAnimation.Active = true;
                         DyingAnimation.IsLoop = false;
@@ -101,11 +123,18 @@ namespace LemmingGame
         {
             if (Selected && key.IsKeyDown(Keys.D))
                 state = wormState.Dying;
-            else if(!DyingAnimation.IsDead)
+            else if(state != wormState.Dying)
             {
                 if (Selected && key.IsKeyDown(Keys.B))
                 {
                     state = wormState.Blocking;
+                    Working = true;
+                    Selected = false;
+                }
+
+                if(Selected && key.IsKeyDown(Keys.R))
+                {
+                    state = wormState.Digging;
                     Working = true;
                     Selected = false;
                 }
@@ -128,16 +157,32 @@ namespace LemmingGame
                 DirectionRight = false;
         }
 
-        public void Collision(Rectangle _collisionRect)
+        public void Collision(SpriteBatch spriteBatch, GameTime gameTime, Rectangle _collisionRect, Collision tile)
         {
             if (wormRectangle.TouchTop(_collisionRect))
             {
                 Velocity = 0;
                 OnGround = true;
+                if (state == wormState.Digging)
+                {   
+                                         
+                    BreakingAnimation.Active = true;
+                    BreakingAnimation.IsLoop = false;
+                    BreakingAnimation.Update(gameTime);
+                    breakingRect = _collisionRect;
+                    if (BreakingAnimation.IsDead)
+                    {
+                        tileActive = false;
+                        Gameplay.BreakTile(tile);
 
+                    }
+                }
+               
             }
             if (wormRectangle.TouchRight(_collisionRect) && !DirectionRight)
             {
+                if (state == wormState.Digging)
+                    tileActive = false; 
                 
                Velocity = 0;
                OnGround = true;
@@ -183,6 +228,11 @@ namespace LemmingGame
                     else
                         StopperAnimation.Draw(spriteBatch, position - _cameraPos);
                     break;
+                case wormState.Digging:
+                    DiggingAnimation.Draw(spriteBatch, position - _cameraPos);
+                    if(!BreakingAnimation.IsDead)
+                    BreakingAnimation.Draw(spriteBatch, new Vector2(breakingRect.X - _cameraPos.X, breakingRect.Y - _cameraPos.Y));
+                    break;
                 case wormState.Dying:
                     if (DirectionRight)
                         DyingAnimation.Draw(spriteBatch, position - _cameraPos);
@@ -190,9 +240,17 @@ namespace LemmingGame
                         DyingAnimation.Draw(spriteBatch, position - _cameraPos, true);
                     break;
             }
-            if (Selected)
+            if (Selected && state != wormState.Dying)
                 Selector.Draw(spriteBatch, wormRectangle, selectorTexture, _cameraPos);
         }
+        public void DrawBreakable(SpriteBatch spriteBatch, Vector2 _tilePosition) { }
+         
+        public bool isBroken()
+        {
+            return BreakingAnimation.IsDead;
+        }
+                    
+                    
 
 
          

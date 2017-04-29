@@ -3,4 +3,7 @@ Content\selector1.xnb
 Content\wormStopper.xnb
 Content\wormWalking.xnb
 Content\wormDying.xnb
+Content\Tile2.xnb
+Content\Breakables.xnb
+Content\wormDigging.xnb
 Content\Tile1.png

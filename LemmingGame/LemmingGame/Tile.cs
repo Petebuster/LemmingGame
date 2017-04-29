@@ -8,10 +8,14 @@ using System.Text;
 
 namespace LemmingGame
 {
-    class Tile
+     class Tile
     {
-        protected Texture2D tileTexture;
+        Animation breakingAnimation = new Animation();
 
+        public bool tileActive = true;
+
+
+        protected Texture2D tileTexture;
         private Rectangle tileRectangle;
         public Rectangle TileRectangle
         {
@@ -29,6 +33,7 @@ namespace LemmingGame
         public void Draw(SpriteBatch spriteBatch, Vector2 _cameraPos)
         {
             spriteBatch.Begin();
+            if(tileActive)
             spriteBatch.Draw(tileTexture, new Rectangle((int)tileRectangle.X -(int) _cameraPos.X, (int)tileRectangle.Y - (int)_cameraPos.Y, tileRectangle.Width, tileRectangle.Height), Color.White);
             spriteBatch.End();
         }

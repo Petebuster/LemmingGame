@@ -62,7 +62,7 @@ namespace LemmingGame
             {
                 case screenState.Splash: break;
                 case screenState.Menu: break;
-                case screenState.Game: Gameplay.Update(gameTime); break;
+                case screenState.Game: Gameplay.Update(gameTime, spriteBatch); break;
             }
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
