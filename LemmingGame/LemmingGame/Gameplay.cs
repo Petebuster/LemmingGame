@@ -22,10 +22,14 @@ namespace LemmingGame
         private Texture2D dyingTexture;
         private Texture2D breakingTexture;
         private Texture2D diggingTexture;
+        private Texture2D weldingTexture;
+        private Texture2D bouncingTexture;
+        private Texture2D jumpingTexture;
         private Texture2D selectorTexture;
-        private int wormCount = 3;
+        private int wormCount = 6;
         private int i = 0;
         private static ContentManager content;
+        public bool WeldingActive;
         //Public Variables
         public static ContentManager Content
         {
@@ -41,6 +45,9 @@ namespace LemmingGame
             dyingTexture = Content.Load<Texture2D>("wormDying");
             breakingTexture = Content.Load<Texture2D>("Breakables");
             diggingTexture = Content.Load<Texture2D>("wormDigging");
+            weldingTexture = Content.Load<Texture2D>("wormWelding");
+            bouncingTexture = Content.Load<Texture2D>("wormBouncing");
+            jumpingTexture = Content.Load<Texture2D>("wormJumping");
             selectorTexture = Content.Load<Texture2D>("selector1");
             Camera = new Camera();
             Map = new Map(); Map.Initialize();
@@ -56,9 +63,10 @@ namespace LemmingGame
                 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
                 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
                 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2},
                 {2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2},
                 {2,2,1,2,1,2,1,2,2,2,2,2,2,2,2,2},
+                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
                 {0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
                 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -68,6 +76,28 @@ namespace LemmingGame
                 {2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2},
                 {2,2,1,2,1,2,1,2,2,2,2,2,2,2,2,2},
                 {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2},
+    
+                //{0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                //{0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                //{0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                //{0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                //{0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                //{0,0,0,1,1,2,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                //{0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                //{0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                //{0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                //{0,1,1,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                //{1,1,1,1,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                //{1,0,0,1,1,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                //{0,0,0,0,1,1,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0},
+                //{0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0},
+                //{0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0},
+                //{0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,1,1,0,0},
+                //{0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,1,1,0,1,0},
+                //{0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,1,1,0,0,1,0},
+                //{0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,1,1,0,0,1,0,0},
+                //{0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,1,1,0,0,0,0,0,0},
+                //{0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0},
 
             }, 32);
         }
@@ -91,7 +121,11 @@ namespace LemmingGame
                     //    tile.TileActive = false;
                     if (tile.tileActive)
                          worm.Collision(spriteBatch, gameTime, tile.TileRectangle, tile);
-                    
+                    //if (WeldingActive)
+                    //{
+                    //    tile.WeldTile();
+                    //    WeldingActive = false;
+                    //}
 
                 }
                 //Blocker Collision
@@ -99,6 +133,12 @@ namespace LemmingGame
                     foreach (var Blocker in Worms)
                         if (Blocker.state == Worm.wormState.Walking)
                             Blocker.BlockerCollision(worm.WormRectangle, worm.DirectionRight);
+
+                //Bouncer Collision
+                if (worm.state == Worm.wormState.Bouncing)
+                    foreach (var Bouncer in Worms)
+                        if (Bouncer.state == Worm.wormState.Walking)
+                            Bouncer.BouncerCollision(worm.WormRectangle, worm.DirectionRight);
             }
         }
         public void BreakTile(Collision tile)
@@ -118,12 +158,20 @@ namespace LemmingGame
             if (i < wormCount)
                 if (time.TotalSeconds > 2)
                 {
-                    Worms.Add(new Worm(fallingTexture, walkingTexture, stoppingTexture, dyingTexture, breakingTexture, diggingTexture, selectorTexture, this));
+                    Worms.Add(new Worm(fallingTexture, walkingTexture, stoppingTexture, dyingTexture, breakingTexture, diggingTexture, weldingTexture, bouncingTexture, jumpingTexture, selectorTexture, this));
                     time = new TimeSpan();
                     i++;
                 }
         }
 
-        
+        public void Deselect()
+        {
+            foreach (var worm in Worms)
+                worm.Selected = false;
+        }
+        public void WeldTile(Collision tile)
+        {
+            //tile.TileRectangle = new Rectangle();
+        }
     }
 }

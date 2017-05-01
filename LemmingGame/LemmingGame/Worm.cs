@@ -10,7 +10,7 @@ namespace LemmingGame
 {
     class Worm
     {
-        public enum wormState { Falling, Walking, Blocking, Digging, Breaking, Dying}
+        public enum wormState { Falling, Walking, Blocking, Digging, Breaking, Welding, Bouncing, Jumping, Dying}
         public wormState state = new wormState();
         MouseState mouseState;
 
@@ -20,8 +20,11 @@ namespace LemmingGame
         private Texture2D wormDying;
         private Texture2D wormDigging;
         private Texture2D breakingTile;
+        private Texture2D wormWelding;
+        private Texture2D wormBouncing;
+        private Texture2D wormJumping;
         private Texture2D selectorTexture;
-        private Vector2 position = new Vector2();
+        private Vector2 position = new Vector2(20,0);
         private Rectangle breakingRect = new Rectangle();
         private bool breakingActive;
         private float Velocity = 1;
@@ -29,7 +32,7 @@ namespace LemmingGame
         private Rectangle wormRectangle;
         private bool OnGround;
         public bool DirectionRight = true;
-        private bool Selected;
+        public bool Selected;
         private bool Working;
         private KeyboardState key;
 
@@ -44,15 +47,19 @@ namespace LemmingGame
         Animation WalkingAnimation = new Animation();
         Animation StopperAnimation = new Animation();
         Animation DyingAnimation = new Animation();
+        Animation WeldingAnimation = new Animation();
         public Animation BreakingAnimation = new Animation();
         Animation DiggingAnimation = new Animation();
+        Animation BouncingAnimation = new Animation();
+        Animation JumpingAnimation = new Animation();
+
         Selector Selector = new Selector();
 
         Gameplay Gameplay;
 
         //Initialize
 
-        public Worm(Texture2D _wormFalling, Texture2D _wormWalking, Texture2D _wormStopping, Texture2D _wormDying, Texture2D _tileBreaking, Texture2D _wormDigging, Texture2D _selectorTexture, Gameplay _gameplay)
+        public Worm(Texture2D _wormFalling, Texture2D _wormWalking, Texture2D _wormStopping, Texture2D _wormDying, Texture2D _tileBreaking, Texture2D _wormDigging, Texture2D _wormWelding, Texture2D _wormBouncing, Texture2D _wormJumping, Texture2D _selectorTexture, Gameplay _gameplay)
         {
             Gameplay = _gameplay;
             wormFalling = _wormFalling;
@@ -60,6 +67,9 @@ namespace LemmingGame
             wormStopping = _wormStopping;
             wormDying = _wormDying;
             wormDigging = _wormDigging;
+            wormWelding = _wormWelding;
+            wormBouncing = _wormBouncing;
+            wormJumping = _wormJumping;
             breakingTile = _tileBreaking;
             selectorTexture = _selectorTexture;
             FallingAnimation.Initialize(position, new Vector2(10,1), 100, wormFalling);
@@ -67,12 +77,15 @@ namespace LemmingGame
             StopperAnimation.Initialize(position, new Vector2(4, 1), 200, wormStopping);
             DyingAnimation.Initialize(position, new Vector2(14, 1), 100, wormDying);
             DiggingAnimation.Initialize(position, new Vector2(4, 1), 100, wormDigging);
-            BreakingAnimation.Initialize(position, new Vector2(10, 1), 500, breakingTile);
+            BreakingAnimation.Initialize(position, new Vector2(10, 1), 700, breakingTile);
+            WeldingAnimation.Initialize(position, new Vector2(4,1), 100, wormWelding);
+            BouncingAnimation.Initialize(position, new Vector2(6,1), 100, wormBouncing);
+            JumpingAnimation.Initialize(position, new Vector2(7,1), 100, wormJumping);
         }
 
         public void Update(GameTime gameTime, Vector2 _cameraPos)
         {
-            //Console.WriteLine(state);
+
             if (!DyingAnimation.IsDead)
             {
                 int camPointerX = mouseState.X + (int)_cameraPos.X;
@@ -84,14 +97,13 @@ namespace LemmingGame
                 CheckState();
                 CheckDirection();
                 OnGround = false;
-                wormRectangle = new Rectangle((int)position.X, (int)position.Y, WalkingAnimation.FrameWidth, WalkingAnimation.FrameHeight);
+                wormRectangle = new Rectangle((int)position.X, (int)position.Y, FallingAnimation.FrameWidth, FallingAnimation.FrameHeight);
                 if (wormRectangle.Contains(camPointerX, camPointerY) && mouseState.LeftButton == ButtonState.Pressed)
                 {
-                   // if (Selected)
-                   //     Selected = false;
-                   /*else*/ Selected = true;
-
+                    Gameplay.Deselect();
+                    Selected = true;
                 }
+
                 //ToDo: kill AnimationUpdate when animation.IsDead
                 switch (state)
                 {
@@ -113,6 +125,38 @@ namespace LemmingGame
                         speed = 0;
                         Velocity = 1;
                         break;
+                    case wormState.Welding:
+                        WeldingAnimation.Active = true;
+                        WeldingAnimation.Update(gameTime);
+                        position.X += 0.1f;
+                        if(!Gameplay.WeldingActive)
+                            Velocity = 1;
+                        break;
+                    case wormState.Bouncing:
+                        BouncingAnimation.Active = true;
+                        BouncingAnimation.Update(gameTime);
+                        break;
+                    case wormState.Jumping:
+                        JumpingAnimation.Active = true;
+                        JumpingAnimation.IsLoop = false;
+                        JumpingAnimation.Update(gameTime);
+                        if (!JumpingAnimation.IsDead)
+                        {
+                            if (DirectionRight)
+                            {
+                                position.X += 1;
+                                position.Y -= 2 * speed;
+                            }
+                            else
+                            {
+                                position.X -= 1;
+                                position.Y += 2 * speed;
+                            }
+                        }
+                        else { state = wormState.Falling;
+                            JumpingAnimation.Reset();
+                        }
+                        break;
                     case wormState.Dying:
                         DyingAnimation.Active = true;
                         DyingAnimation.IsLoop = false;
@@ -125,36 +169,53 @@ namespace LemmingGame
         }
 
         private void CheckState()
-        {
-            if (Selected && key.IsKeyDown(Keys.D))
-                state = wormState.Dying;
-            else if (state != wormState.Dying)
+        {//This should be changed // remove Jumping if schleife
+            if (state != wormState.Jumping)
             {
-                if (Selected && key.IsKeyDown(Keys.B))
+                if (Selected && key.IsKeyDown(Keys.D))
+                    state = wormState.Dying;
+                else if (state != wormState.Dying)
                 {
-                    state = wormState.Blocking;
-                    Working = true;
-                    Selected = false;
+                    if (Selected && key.IsKeyDown(Keys.B))
+                    {
+                        state = wormState.Blocking;
+                        Working = true;
+                        Selected = false;
+                    }
+
+                    if (Selected && key.IsKeyDown(Keys.W))
+                    {
+                        state = wormState.Welding;
+                        Working = true;
+                        Selected = false;
+                    }
+
+                    if (Selected && key.IsKeyDown(Keys.J))
+                    {
+                        state = wormState.Bouncing;
+                        Working = true;
+                        Selected = false;
+                    }
+
+                    if (Selected && key.IsKeyDown(Keys.R))
+                    {
+                        state = wormState.Digging;
+                        Working = true;
+                        Selected = false;
+                    }
+
+                    if (!Working)
+                    {
+                        if (OnGround)
+                            state = wormState.Walking;
+                        else state = wormState.Falling;
+                    }
+
+                    // else if (!OnGround) state = wormState.Falling;
+
                 }
 
-                if (Selected && key.IsKeyDown(Keys.R))
-                {
-                    state = wormState.Digging;
-                    Working = true;
-                    Selected = false;
-                }
-
-                if (!Working)
-                {
-                    if (OnGround)
-                        state = wormState.Walking;
-                    else state = wormState.Falling;
-                }
-
-              // else if (!OnGround) state = wormState.Falling;
-                
             }
-            
         }
 
         public void CheckDirection()
@@ -190,13 +251,20 @@ namespace LemmingGame
             }
             if (wormRectangle.TouchRight(/*_collisionRect*/tile.TileRectangle) && !DirectionRight)
             {
-                if (state == wormState.Digging)
+                //if (state == wormState.Digging)
                     //tileActive = false; 
                 
                Velocity = 0;
                OnGround = true;
                speed = 1;
-               //DirectionRight = true;
+
+                if (state == wormState.Welding /*&& Gameplay.WeldingActive*/)
+                {
+                    Gameplay.BreakTile(tile);
+                    Gameplay.WeldingActive = false;
+                   // Velocity = 1;
+                }
+                //DirectionRight = true;
             }
 
               if (wormRectangle.TouchLeft(/*_collisionRect*/tile.TileRectangle) && DirectionRight)
@@ -204,8 +272,19 @@ namespace LemmingGame
                 Velocity = 0;
                 OnGround = true;
                 speed = -1;
+
+                if (state == wormState.Welding)
+                {
+                    Gameplay.WeldingActive = true;
+                    Velocity = 0;
+                }
+
+                //Gameplay.BreakTile(tile);
                 //DirectionRight = false;
-            }       
+            }
+
+            if (wormRectangle.TouchBottom(tile.TileRectangle))
+                state = wormState.Falling;
         }
 
         public void BlockerCollision(Rectangle _blockerRec, bool _blockToRight)
@@ -215,6 +294,12 @@ namespace LemmingGame
                 if (_blockToRight)
                     speed = -1;
                 else speed = 1;
+        }
+
+        public void BouncerCollision(Rectangle _bouncerRec, bool _bounceToRight)
+        {
+            if (wormRectangle.Intersects(_bouncerRec))
+                state = wormState.Jumping;
         }
 
         public void Draw(SpriteBatch spriteBatch, Vector2 _cameraPos)
@@ -241,6 +326,15 @@ namespace LemmingGame
                     DiggingAnimation.Draw(spriteBatch, position - _cameraPos);
                     if(/*!BreakingAnimation.IsDead*/breakingActive)
                     BreakingAnimation.Draw(spriteBatch, new Vector2(breakingRect.X - _cameraPos.X, breakingRect.Y - _cameraPos.Y));
+                    break;
+                case wormState.Welding:
+                    WeldingAnimation.Draw(spriteBatch, position - _cameraPos);
+                    break;
+                case wormState.Bouncing:
+                    BouncingAnimation.Draw(spriteBatch, position - _cameraPos);
+                    break;
+                case wormState.Jumping:
+                    JumpingAnimation.Draw(spriteBatch, position - _cameraPos);
                     break;
                 case wormState.Dying:
                     if (DirectionRight)

@@ -7,4 +7,7 @@ Content\Tile2.xnb
 Content\Breakables.xnb
 Content\wormDigging.xnb
 Content\wormFalling.xnb
+Content\wormWelding.xnb
+Content\wormBouncing.xnb
+Content\wormJumping.xnb
 Content\Tile1.png
