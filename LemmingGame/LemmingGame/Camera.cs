@@ -47,14 +47,14 @@ namespace LemmingGame
                 cameraPos.Y -= 2;
 
             //Keyboard Input
-            if (Keyboard.GetState().IsKeyDown(Keys.Right))
-                cameraPos.X += 2;
-            if (Keyboard.GetState().IsKeyDown(Keys.Up))
-                cameraPos.Y -= 2;
-            if (Keyboard.GetState().IsKeyDown(Keys.Left))
-                cameraPos.X -= 2;
-            if (Keyboard.GetState().IsKeyDown(Keys.Down))
-                cameraPos.Y += 2;
+            //if (Keyboard.GetState().IsKeyDown(Keys.Right))
+            //    cameraPos.X += 2;
+            //if (Keyboard.GetState().IsKeyDown(Keys.Up))
+            //    cameraPos.Y -= 2;
+            //if (Keyboard.GetState().IsKeyDown(Keys.Left))
+            //    cameraPos.X -= 2;
+            //if (Keyboard.GetState().IsKeyDown(Keys.Down))
+            //    cameraPos.Y += 2;
         }
     }
 }

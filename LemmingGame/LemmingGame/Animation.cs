@@ -80,15 +80,20 @@ namespace LemmingGame
             sourceRect = new Rectangle((int)currentFrame.X, (int)currentFrame.Y, FrameWidth, FrameHeight);
         }
         
-        public void Draw(SpriteBatch spriteBatch, Vector2 _position, bool flip = false)
+        public void Draw(SpriteBatch spriteBatch, Vector2 _position, Vector2 _camPos, bool flip = false)
         {
             SpriteEffects appliedEffect = SpriteEffects.None;
             if (flip)
                 appliedEffect = SpriteEffects.FlipHorizontally;
 
             spriteBatch.Begin();
-            spriteBatch.Draw(image, _position, sourceRect, Color.White, 0, Vector2.Zero, 1, appliedEffect, 1);
+            spriteBatch.Draw(image, _position - _camPos, sourceRect, Color.White, 0, Vector2.Zero, 1, appliedEffect, 1);
             spriteBatch.End();
+
+            spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, Matrix.CreateScale(Game1.scale));
+            spriteBatch.Draw(image, _position + new Vector2(2400, 1460), sourceRect, Color.White, 0, Vector2.Zero, 1, appliedEffect, 1);
+            spriteBatch.End();
+
         }
         public void Reset()
         {

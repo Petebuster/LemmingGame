@@ -18,13 +18,19 @@ namespace LemmingGame
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        public const float scale = 0.25f;
+        
+
         Gameplay Gameplay;
         
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
             IsMouseVisible = true;
+            Console.WriteLine(graphics.PreferredBackBufferHeight);
+
         }
 
         protected override void Initialize()

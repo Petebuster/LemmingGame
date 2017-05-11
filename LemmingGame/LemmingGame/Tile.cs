@@ -9,14 +9,15 @@ using System.Text;
 namespace LemmingGame
 {
      class Tile
-    {
+    {   
+
         Animation breakingAnimation = new Animation();
 
         public bool tileActive = true;
 
         protected int test;
 
-        protected Texture2D tileTexture;
+        public Texture2D tileTexture;
         private Rectangle tileRectangle;
         public Rectangle TileRectangle
         {
@@ -31,12 +32,24 @@ namespace LemmingGame
             set { content = value; }
         }
 
+
+
         public void Draw(SpriteBatch spriteBatch, Vector2 _cameraPos)
         {
+
+           
+
             spriteBatch.Begin();
             if(tileActive)
             spriteBatch.Draw(tileTexture, new Rectangle((int)tileRectangle.X -(int) _cameraPos.X , (int)tileRectangle.Y - (int)_cameraPos.Y, tileRectangle.Width, tileRectangle.Height), Color.White);
             spriteBatch.End();
+
+            //spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, Matrix.CreateScale(0.25f));
+            //if (tileActive)
+            //    spriteBatch.Draw(tileTexture, new Rectangle((int)tileRectangle.X + 2400, (int)tileRectangle.Y + 1460, tileRectangle.Width, tileRectangle.Height), Color.White);
+            //spriteBatch.End();
+
+
         }
 
         public void WeldTile()
@@ -52,7 +65,9 @@ namespace LemmingGame
         public Collision(int number, Rectangle _collisionRect)
         {
             tileTexture = Content.Load<Texture2D>("Tile" + number);
-            TileRectangle = _collisionRect; // new Rectangle(_collisionRect.X, _collisionRect.Y, _collisionRect.Width - test, _collisionRect.Height);
+           // TileRectangle = _collisionRect; // new Rectangle(_collisionRect.X, _collisionRect.Y, _collisionRect.Width - test, _collisionRect.Height);
+            TileRectangle = new Rectangle(_collisionRect.X, _collisionRect.Y, _collisionRect.Width, _collisionRect.Height);
         }
+        
     }
 }
